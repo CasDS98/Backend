@@ -1,5 +1,6 @@
 const config = require('config');
 const knex = require('knex');
+const { join } = require('path');
 
 let knexInstance;
 
@@ -24,6 +25,10 @@ async function initializeData() {
 			password: DATABASE_PASSWORD,
 			insecureAuth: isDevelopment,
 		},
+		migrations: {
+			tableName: 'knex_meta',
+			directory: join('src', 'data', 'migrations')
+		},
   };
   
   knexInstance = knex(knexOptions);
@@ -33,8 +38,32 @@ async function initializeData() {
 	} catch (error) {
 		logger.error(error.message, { error });
 		throw new Error('Could not initialize the data layer');
-  }
-  
+	}
+	// Run migrations
+let migrationsFailed = true;
+try {
+	await knexInstance.migrate.latest();
+	migrationsFailed = false;
+} catch (error) {
+	logger.error('Error while migrating the database', {
+		error,
+	});
+}
+
+// Undo last migration if something failed
+if (migrationsFailed) {
+	try {
+		await knexInstance.migrate.down();
+	} catch (error) {
+		logger.error('Error while undoing last migration', {
+			error,
+		});
+	}
+
+	// No point in starting the server
+	throw new Error('Migrations failed');
+}
+
 
 	return knexInstance;
 }
