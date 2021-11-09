@@ -2,6 +2,8 @@ const config = require('config');
 const knex = require('knex');
 const { join } = require('path');
 
+const { getChildLogger } = require('../core/logging');
+
 let knexInstance;
 
 const NODE_ENV = config.get('env');
@@ -15,6 +17,10 @@ const DATABASE_USERNAME = config.get('database.username');
 const DATABASE_PASSWORD = config.get('database.password');
 
 async function initializeData() {
+
+	const logger = getChildLogger('database');
+  logger.info('Initializing connection to the database');
+
   const knexOptions = {
 		client: DATABASE_CLIENT,
 		connection: {
@@ -29,6 +35,9 @@ async function initializeData() {
 			tableName: 'knex_meta',
 			directory: join('src', 'data', 'migrations')
 		},
+		seeds: {
+			directory: join('src', 'data', 'seeds')
+		}
   };
   
   knexInstance = knex(knexOptions);
@@ -64,6 +73,15 @@ if (migrationsFailed) {
 	throw new Error('Migrations failed');
 }
 
+if (isDevelopment) {
+	try {
+		await knexInstance.seed.run();
+	} catch (error) {
+		logger.error('Error while seeding database', {
+			error,
+		});
+	}
+}
 
 	return knexInstance;
 }
