@@ -7,11 +7,19 @@
 		"@koa/router": "^10.1.1",
 		"config": "^3.3.6",
 		"env-cmd": "^10.1.0",
+		"knex": "^0.95.13",
 		"koa": "^2.13.4",
 		"koa-bodyparser": "^4.3.0",
+		"mysql2": "^2.3.2",
 		"winston": "^3.3.3"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.12"
-	}
+	},
+	"name": "server",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "git@github.com:HOGENT-Web/webservices-pieter-2122-CasDS98.git",
+	"author": "Cas De Smet <cas.desmet@student.hogent.be>",
+	"license": "MIT"
 }
