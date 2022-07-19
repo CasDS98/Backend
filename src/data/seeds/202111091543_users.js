@@ -1,13 +1,13 @@
 module.exports = {
 	seed: async (knex) => {
 		// first delete all entries
-		await knex('users').delete();
+		await knex('user').delete();
 
 		// then add the fresh places
-		await knex('users').insert([
-		{ email: 'test1@hotmail.com', userName: 'test_1', password: '12345678' },
-		{ email: 'test2@hotmail.com', userName: 'test_2', password: '87654321'  },
-		{ email: 'test3@hotmail.com', userName: 'test_3', password: 'wachtwoord'  },
+		await knex('user').insert([
+		{id: '23c1d4bb-2452-408c-b380-b61beed3d046',  email: 'test1@hotmail.com', user_name: 'test_1', password: '12345678' },
+		{id: 'e56f7f75-990d-449c-9dd6-022bd7b48cb3', email: 'test2@hotmail.com', user_name: 'test_2', password: '87654321'  },
+		{id: 'bc61df90-1e20-48c1-9c13-fb26d2e2bfe2', email: 'test3@hotmail.com', user_name: 'test_3', password: 'wachtwoord'  },
 	]);
 	},
 };

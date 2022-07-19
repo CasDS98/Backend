@@ -17,4 +17,12 @@ module.exports = {
 		username: 'root',
 		password: process.env.DBPWD,
 	},
+	auth:{
+		argon : {
+			saltLenght: 16,
+			hashLenght: 32,
+			timeCost : 6,
+			memoryCost: 2 ** 17,
+		},
+	}
 };

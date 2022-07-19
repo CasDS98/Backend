@@ -8,8 +8,8 @@ module.exports = {
       table.uuid('user_a');
       table.uuid('user_b');
      
-      table.foreign('user_a').references('users.id');
-      table.foreign('user_b').references('users.id');
+      table.foreign('user_a').references('user.id');
+      table.foreign('user_b').references('user.id');
 		});
 	}, 
 	down: (knex) => {

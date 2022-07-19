@@ -6,7 +6,7 @@ module.exports = {
       table.uuid('id').primary;
       table.uuid('user');
       table.uuid('group');
-      table.foreign('user').references('users.id');
+      table.foreign('user').references('user.id');
       table.foreign('group').references('group.id');
 		});
 	}, 

@@ -9,6 +9,21 @@ const getAllUsers = async (ctx) => {
   ctx.body = users;
 };
 
+const getById = async (ctx) => {
+  const user = await userService.getById(ctx.params.email);
+  ctx.body = user;
+}
+
+const updateById = async (ctx) => {
+  const user = await userService.updateById(ctx.params.email, ctx.request.body);
+  ctx.body = user;
+}
+
+const deleteById = async (ctx) => {
+  await userService.deleteById(ctx.params.email);
+  ctx.status = 204;
+}
+
 /**
  * Install user routes in the given router.
  *
@@ -20,6 +35,9 @@ module.exports = function installUsersRoutes(app) {
   });
 
   router.get('/', getAllUsers);
+  router.get('/:email', getById);
+  router.put('/:email', updateById);
+  router.delete('/:email', deleteById);
  
   app
     .use(router.routes())

@@ -8,7 +8,7 @@ module.exports = {
       table.uuid('user').notNullable();
       table.uuid('group').notNullable();
       table.string('value', 300);
-      table.foreign('user').references('users.id');
+      table.foreign('user').references('user.id');
       table.foreign('group').references('group.id');
 		});
 	}, 

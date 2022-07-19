@@ -92,11 +92,11 @@ function getKnex() {
 }
 
 const tables = Object.freeze({
-	user: 'users',
-	group: 'Group',
-	message: 'Message',
-	friend: 'Friend',
-	userGroup: 'UserGroup',
+	user: 'user',
+	group: 'group',
+	message: 'message',
+	friend: 'friend',
+	userGroup: 'user_group',
 });
 
 module.exports = {
