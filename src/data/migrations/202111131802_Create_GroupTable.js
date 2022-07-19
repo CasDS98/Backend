@@ -4,7 +4,8 @@ module.exports = {
 	up: async (knex) => {
 		await knex.schema.createTable(tables.group, (table) => {
       table.uuid('id').primary();
-			table.string('name', 40).notNullable();
+      table.string('name', 255).notNullable();
+     
     });
 	},
 	down: (knex) => {
