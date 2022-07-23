@@ -5,7 +5,7 @@ module.exports = {
 		await knex.schema.createTable(tables.user, (table) => {
 			table.uuid('id').primary();
 
-			table.string('email', 255);
+			table.string('email', 255).unique();
 			
 
 			table.string('user_name', 255)

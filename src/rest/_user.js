@@ -9,20 +9,20 @@ const getAllUsers = async (ctx) => {
   ctx.body = users;
 };
 
-const getById = async (ctx) => {
-  const user = await userService.getById(ctx.params.email);
+const getUserById = async (ctx) => {
+  const user = await userService.getById(ctx.params.id);
   ctx.body = user;
-}
+};
 
-const updateById = async (ctx) => {
-  const user = await userService.updateById(ctx.params.email, ctx.request.body);
+const updateUserById = async (ctx) => {
+  const user = await userService.updateById(ctx.params.id, ctx.request.body);
   ctx.body = user;
-}
+};
 
-const deleteById = async (ctx) => {
-  await userService.deleteById(ctx.params.email);
+const deleteUserById = async (ctx) => {
+  await userService.deleteById(ctx.params.id);
   ctx.status = 204;
-}
+};
 
 /**
  * Install user routes in the given router.
@@ -35,10 +35,10 @@ module.exports = function installUsersRoutes(app) {
   });
 
   router.get('/', getAllUsers);
-  router.get('/:email', getById);
-  router.put('/:email', updateById);
-  router.delete('/:email', deleteById);
- 
+  router.get('/:id', getUserById);
+  router.put('/:id', updateUserById);
+  router.delete('/:id', deleteUserById);
+
   app
     .use(router.routes())
     .use(router.allowedMethods());

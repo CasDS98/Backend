@@ -1,5 +1,6 @@
-const { tables, getKnex } = require('../data/index');
-
+const uuid = require('uuid');
+const { tables, getKnex } = require('../data');
+const { getChildLogger } = require('../core/logging');
 
 /**
  * Get all `limit` users, skip the first `offset`.
@@ -9,13 +10,14 @@ const { tables, getKnex } = require('../data/index');
  * @param {number} pagination.offset - Nr of transactions to skip.
  */
 const findAll = ({
-	limit,
-	offset,
+  limit,
+  offset,
 }) => {
-	return getKnex()(tables.user)
-		.select()
-		.limit(limit)
-		.offset(offset)
+  return getKnex()(tables.user)
+    .select()
+    .limit(limit)
+    .offset(offset)
+    .orderBy('user_name', 'ASC');
 };
 
 /**
@@ -30,12 +32,76 @@ const findCount = async () => {
 /**
  * Find a user with the given id.
  *
- * @param {string} id - The id to search for.
+ * @param {uuid} id - The id to search for.
  */
 const findById = (id) => {
   return getKnex()(tables.user)
-    .where('email', id)
+    .where('id', id)
     .first();
+};
+
+/**
+ * Create a new user with the given `name`.
+ *
+ * @param {object} user - User to create.
+ * @param {string} email - email of the user.
+ * @param {string} user_name - Name of the user.
+ * @param {string} password - password of the user.
+ */
+const create = async ({
+  			email,
+				user_name,
+				password,
+}) => {
+  try {
+    const id = uuid.v4();
+    await getKnex()(tables.user)
+      .insert({
+        id,
+				email,
+				user_name,
+				password,
+      });
+    return await findById(id);
+  } catch (error) {
+    const logger = getChildLogger('users-repo');
+    logger.error('Error in create', {
+      error,
+    });
+    throw error;
+  }
+};
+
+/**
+ * Update a user with the given `id`.
+ *
+ * @param {object} user - User to create.
+ * @param {string} email - email of the user.
+ * @param {string} user_name - Name of the user.
+ * @param {string} password - password of the user.
+ */
+const updateById = async (id, {
+  email,
+  user_name,
+  password,
+}) => {
+  try {
+    await getKnex()(tables.user)
+      .update({
+        id,
+				email,
+				user_name,
+				password,
+      })
+      .where('id', id);
+    return await findById(id);
+  } catch (error) {
+    const logger = getChildLogger('users-repo');
+    logger.error('Error in updateById', {
+      error,
+    });
+    throw error;
+  }
 };
 
 /**
@@ -47,7 +113,7 @@ const deleteById = async (id) => {
   try {
     const rowsAffected = await getKnex()(tables.user)
       .delete()
-      .where('email', id);
+      .where('id', id);
     return rowsAffected > 0;
   } catch (error) {
     const logger = getChildLogger('users-repo');
@@ -58,38 +124,11 @@ const deleteById = async (id) => {
   }
 };
 
-
-/**
- * Update a user with the given `id`.
- *
- * @param {string} id - Id of the user to update.
- * @param {object} userName - User to save.
- * @param {string} user.userName - Name of the user.
- */
- const updateById = async (id, {
-  userName
-}) => {
-  try {
-    await getKnex()(tables.user)
-      .update({
-        userName,
-      })
-      .where('email', id);
-    return await findById(id);
-  } catch (error) {
-    const logger = getChildLogger('users-repo');
-    logger.error('Error in updateById', {
-      error,
-    });
-    throw error;
-  }
-};
-
 module.exports = {
-	findAll,
-	findById,
-	deleteById,
+  findAll,
   findCount,
-  updateById
+  findById,
+  create,
+  updateById,
+  deleteById,
 };
- 
