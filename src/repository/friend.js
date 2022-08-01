@@ -118,13 +118,13 @@ const formatFriends = async (userId, friends) => {
       .whereIn(`${tables.friend}.user_a`, [user_a , user_b]).whereIn(`${tables.friend}.user_b`, [user_a , user_b]);
     return rowsAffected > 0;
   } catch (error) {
-    const logger = getChildLogger('transactions-repo');
+    const logger = getChildLogger('friends-repo');
     logger.error('Error in deleteById', {
       error,
     });
     throw error;
   }
-};
+}; 
 
 
 module.exports = {
