@@ -46,12 +46,13 @@ const findById = (id) => {
  * @param {object} user - User to create.
  * @param {string} email - email of the user.
  * @param {string} user_name - Name of the user.
- * @param {string} password - password of the user.
+ * @param {string} passwordHash - Hashed password of the user.
  */
 const create = async ({
   			email,
 				user_name,
-				password,
+				passwordHash,
+        roles
 }) => {
   try {
     const id = uuid.v4();
@@ -60,7 +61,8 @@ const create = async ({
         id,
 				email,
 				user_name,
-				password,
+				password : passwordHash,
+        roles: JSON.stringify(roles),
       });
     return await findById(id);
   } catch (error) {
@@ -124,6 +126,12 @@ const deleteById = async (id) => {
   }
 };
 
+const findByEmail = (email) => {
+	return getKnex()(tables.user)
+		.where('email', email)
+		.first();
+};
+
 module.exports = {
   findAll,
   findCount,
@@ -131,4 +139,5 @@ module.exports = {
   create,
   updateById,
   deleteById,
+  findByEmail
 };

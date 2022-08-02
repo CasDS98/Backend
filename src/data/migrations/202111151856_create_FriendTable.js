@@ -8,8 +8,8 @@ module.exports = {
       table.uuid('user_a');
       table.uuid('user_b');
      
-      table.foreign('user_a').references('user.id');
-      table.foreign('user_b').references('user.id');
+      table.foreign('user_a').references('user.id').onDelete('CASCADE');
+      table.foreign('user_b').references('user.id').onDelete('CASCADE');
 		});
 	}, 
 	down: (knex) => {

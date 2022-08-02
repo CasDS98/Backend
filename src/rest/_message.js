@@ -1,6 +1,6 @@
 const Router = require('@koa/router');
 const messageService = require('../service/message');
-
+const { requireAuthentication } = require('../core/auth');
 
 const createMessage = async (ctx) => {
 	const message = await messageService.create({
@@ -38,10 +38,10 @@ const getAllGroupMessages = async (ctx) => {
 		prefix: '/messages',
 	});
 
-  router.get('/:groupId', getAllGroupMessages);
-  router.post('/', createMessage);
-  router.put('/:id', updateMessageById);
-  router.delete('/:id', deleteMessageById);
+  router.get('/:groupId',requireAuthentication, getAllGroupMessages);
+  router.post('/',requireAuthentication, createMessage);
+  router.put('/:id',requireAuthentication, updateMessageById);
+  router.delete('/:id',requireAuthentication, deleteMessageById);
 
   app
     .use(router.routes())

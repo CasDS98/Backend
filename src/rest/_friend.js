@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const friendService = require('../service/friend');
+const { requireAuthentication } = require('../core/auth');
 
 const getAllFriends = async (ctx) => {
 	ctx.body = await friendService.getAllFriends(ctx.params.userId);
@@ -30,9 +31,9 @@ const deleteFriends = async (ctx) => {
 		prefix: '/friends',
 	});
 
-	router.get('/:userId', getAllFriends);
-	router.post('/', createFriends);
-	router.delete('/', deleteFriends);
+	router.get('/:userId',requireAuthentication, getAllFriends);
+	router.post('/',requireAuthentication, createFriends);
+	router.delete('/',requireAuthentication, deleteFriends);
 
 	app.use(router.routes()).use(router.allowedMethods());
 };

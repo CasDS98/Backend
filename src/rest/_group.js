@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
 const groupService = require('../service/group');
+const { requireAuthentication } = require('../core/auth');
 
 const getAllGroups = async (ctx) => {
 	ctx.body = await groupService.getAllGroups(ctx.params.userId);
@@ -46,12 +47,12 @@ const deleteMember = async (ctx) => {
 		prefix: '/groups',
 	});
 
-	router.get('/:userId', getAllGroups);
-  router.get('/members/:id', getAllMembers);
-	router.post('/', createGroup);
-  router.delete('/:id', deleteGroup);
-  router.post('/members/:id', addMember);
-  router.delete('/members/:id', deleteMember);
+	router.get('/:userId',requireAuthentication, getAllGroups);
+  router.get('/members/:id',requireAuthentication, getAllMembers);
+	router.post('/',requireAuthentication, createGroup);
+  router.delete('/:id',requireAuthentication, deleteGroup);
+  router.post('/members/:id',requireAuthentication, addMember);
+  router.delete('/members/:id',requireAuthentication, deleteMember);
 
 	app.use(router.routes()).use(router.allowedMethods());
 };

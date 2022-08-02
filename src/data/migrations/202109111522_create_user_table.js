@@ -11,7 +11,11 @@ module.exports = {
 			table.string('user_name', 255)
 				.notNullable();
 
-			table.string('password', 20).notNullable();
+			table.jsonb('roles')
+				.notNullable();
+
+				table.string('password')
+				.notNullable();
 		});
 	},
 	down: (knex) => {

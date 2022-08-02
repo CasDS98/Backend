@@ -1,5 +1,43 @@
 const { getChildLogger } = require('../core/logging');
 const userRepository = require('../repository/user');
+const { verifyPassword, hashPassword } = require('../core/password');
+const Role = require('../core/roles');
+const { generateJWT, verifyJWT } = require('../core/jwt');
+
+const checkAndParseSession = async (authHeader) => {
+	if (!authHeader) {
+		throw new Error('You need to be signed in');
+	}
+
+	if (!authHeader.startsWith('Bearer ')) {
+		throw new Error('Invalid authentication token');
+	}
+
+	const authToken = authHeader.substr(7);
+	try {
+		const {
+			roles, userId,
+		} = await verifyJWT(authToken);
+
+		return {
+			userId,
+			roles,
+			authToken,
+		};
+	} catch (error) {
+		const logger = getChildLogger('user-service');
+		logger.error(error.message, { error });
+		throw new Error(error.message);
+	}
+};
+
+const checkRole = (role, roles) => {
+	const hasPermission = roles.includes(role);
+
+	if (!hasPermission) {
+		throw new Error('You are not allowed to view this part of the application');
+	}
+};
 
 const debugLog = (message, meta = {}) => {
 	if (!this.logger) this.logger = getChildLogger('user-service');
@@ -14,15 +52,21 @@ const debugLog = (message, meta = {}) => {
  * @param {string} user_name - Name of the user.
  * @param {string} password - password of the user.
  */
-const register = ({
-  name,
+ const register = async ({
+	user_name,
+	email,
+	password,
 }) => {
-  debugLog('Creating a new user', {	email,	user_name,	password });
-  return userRepository.create({
-		email,
+	const passwordHash = await hashPassword(password);
+
+	const user = await userRepository.create({
 		user_name,
-		password,
-  });
+		email,
+		passwordHash,
+		roles: [Role.USER],
+	});
+
+	return await makeLoginData(user);
 };
 
 
@@ -103,10 +147,47 @@ const deleteById = async (id) => {
   }
 };
 
+const makeExposedUser = ({ id, user_name, email, roles }) => ({
+	id,
+	user_name,
+	email,
+	roles,
+});
+
+const makeLoginData = async (user) => {
+	const token = await generateJWT(user);
+	return {
+		user: makeExposedUser(user),
+		token,
+	};
+};
+
+const login = async (email, password) => {
+	const user = await userRepository.findByEmail(email);
+
+	if (!user) {
+		// DO NOT expose we don't know the user
+		throw new Error('The given email and password do not match');
+	}
+
+	const passwordValid = await verifyPassword(password, user.password);
+
+	if (!passwordValid) {
+		// DO NOT expose we know the user but an invalid password was given
+		throw new Error('The given email and password do not match');
+	}
+
+	return await makeLoginData(user);
+};
+
+
 module.exports = {
   register,
   getAll,
   getById,
   updateById,
   deleteById,
+  login,
+  checkAndParseSession,
+  checkRole,
 };
