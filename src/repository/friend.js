@@ -5,7 +5,8 @@ const { getChildLogger } = require('../core/logging');
 
 const formatFriends = async (userId, friends) => {
   let formattedFriends = [];
-
+  formattedFriends.push
+  console.log(userId);
   friends.forEach( (f) => {
     let friendId;
 
@@ -13,13 +14,11 @@ const formatFriends = async (userId, friends) => {
     else  friendId = f.user_a;
 
     formattedFriends.push(
-    {
-      id :  f.id,
-      user_id : friendId,
-    });}
+      friendId
+    );}
   )
 
-  return formattedFriends;
+  return await getKnex()(tables.user).select("id","email","user_name","roles").havingIn(`${tables.user}.id`, formattedFriends);
 }
    
 
@@ -57,8 +56,8 @@ const formatFriends = async (userId, friends) => {
  const findAllFriends = async (
   userId) => {
   const friends = await getKnex()(tables.friend).select().where(`${tables.friend}.user_a`, userId).orWhere(`${tables.friend}.user_b`, userId);
-
-  return formatFriends(userId,friends);
+  const result = await formatFriends(userId,friends);
+  return result;
 };
 
 

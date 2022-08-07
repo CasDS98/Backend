@@ -6,6 +6,7 @@ const koaCors = require('@koa/cors');
 const { initializeLogger, getLogger } = require('./core/logging');
 const { initializeData } = require('./data');
 const installRest = require('./rest');
+const socketIo = require("socket.io");
 
 
 const NODE_ENV = config.get('env');
@@ -52,7 +53,34 @@ async function main() {
 
 
 	logger.info(`🚀 Server listening on http://localhost:9000`);
-	app.listen(9000);
+	const  server = require('http').createServer(app.callback())
+	const  io = socketIo(server, {
+		cors: {
+			origin: "http://localhost:3000",
+			methods: ["GET", "POST"]
+		}
+	});
+	server.listen("9000");
+
+
+	
+	io.on('connection', (socket) => {
+	  	console.log(`USER CONNECTED WITH ID : ${socket.id}`);
+
+			socket.on('join_room', (data) => {
+					socket.join(data);
+					console.log(`USER JOINED ROOM ${data}`);
+			})
+
+			socket.on('send_message', (data) => {
+				console.log(`USER SEND MESSAGE`);
+				socket.to(data.room).emit('receive_message', data.message);
+		})
+
+			socket.on('disconnect', () => {
+				console.log('USER DISCONNECTED');
+			})
+	})
 
 }
 

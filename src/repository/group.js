@@ -115,7 +115,6 @@ const { getChildLogger } = require('../core/logging');
 
   const members = await getKnex()(tables.userGroup).join(tables.user, `${tables.user}.id`,`${tables.userGroup}.user`)
   .select(`${tables.user}.id`,`${tables.user}.email`, `${tables.user}.user_name`).where(`${tables.userGroup}.group` , id);
-  console.log(members);
   return members;
 };
 
