@@ -1,6 +1,8 @@
 const { getChildLogger } = require('../core/logging');
 const messageRepository = require('../repository/message');
 const userRepository = require('../repository/user');
+const ServiceError = require('../core/serviceError');
+
 
 const debugLog = (message, meta = {}) => {
 	if (!this.logger) this.logger = getChildLogger('message-service');
@@ -43,7 +45,7 @@ const create = ({
   const deleted = await messageRepository.deleteById(id);
 
   if (!deleted) {
-    throw new Error(`No message with id ${id} exists`, { id });
+    throw ServiceError.notFound(`No message with id ${id} exists`, { id });
   }
 };
 
@@ -51,9 +53,6 @@ const create = ({
  * Update an existing message.
  * @param {string} message - password of the user.
  *
- * @throws {ServiceError} One of:
- * - NOT_FOUND: No user with the given id could be found.
- * - VALIDATION_FAILED: A user with the same email exists.
  */
  const updateById = (id, { message }) => {
   debugLog(`Updating message with id ${id}`, {message });

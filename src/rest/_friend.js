@@ -56,9 +56,9 @@ deleteFriends.validationScheme = {
 		prefix: '/friends',
 	});
 
-	router.get('/:userId',requireAuthentication, validate(login.getAllFriends), getAllFriends);
-	router.post('/',requireAuthentication, validate(login.createFriends), createFriends);
-	router.delete('/',requireAuthentication, validate(login.deleteFriends), deleteFriends);
+	router.get('/:userId',requireAuthentication, validate(getAllFriends.validationScheme), getAllFriends);
+	router.post('/',requireAuthentication, validate(createFriends.validationScheme), createFriends);
+	router.delete('/',requireAuthentication, validate(deleteFriends.validationScheme), deleteFriends);
 
 	app.use(router.routes()).use(router.allowedMethods());
 };

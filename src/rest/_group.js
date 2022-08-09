@@ -92,12 +92,12 @@ deleteMember.validationScheme = {
 		prefix: '/groups',
 	});
 
-	router.get('/:userId',requireAuthentication, validate(login.getAllGroups), getAllGroups);
-  router.get('/members/:id',requireAuthentication, validate(login.getAllMembers), getAllMembers);
-	router.post('/',requireAuthentication, validate(login.createGroup), createGroup);
-  router.delete('/:id',requireAuthentication, validate(login.deleteGroup), deleteGroup);
-  router.post('/members/:id',requireAuthentication, validate(login.addMember), addMember);
-  router.delete('/members/:id',requireAuthentication, validate(login.deleteMember), deleteMember);
+	router.get('/:userId',requireAuthentication, validate(getAllGroups.validationScheme), getAllGroups);
+  router.get('/members/:id',requireAuthentication, validate(getAllMembers.validationScheme), getAllMembers);
+	router.post('/',requireAuthentication, validate(createGroup.validationScheme), createGroup);
+  router.delete('/:id',requireAuthentication, validate(deleteGroup.validationScheme), deleteGroup);
+  router.post('/members/:id',requireAuthentication, validate(addMember.validationScheme), addMember);
+  router.delete('/members/:id',requireAuthentication, validate(deleteMember.validationScheme), deleteMember);
 
 	app.use(router.routes()).use(router.allowedMethods());
 };

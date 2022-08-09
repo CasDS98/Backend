@@ -3,14 +3,15 @@ const userRepository = require('../repository/user');
 const { verifyPassword, hashPassword } = require('../core/password');
 const Role = require('../core/roles');
 const { generateJWT, verifyJWT } = require('../core/jwt');
+const ServiceError = require('../core/serviceError');
 
 const checkAndParseSession = async (authHeader) => {
 	if (!authHeader) {
-		throw new Error('You need to be signed in');
+		throw new ServiceError.unauthorized('You need to be signed in');
 	}
 
 	if (!authHeader.startsWith('Bearer ')) {
-		throw new Error('Invalid authentication token');
+		throw new ServiceError.unauthorized('Invalid authentication token');
 	}
 
 	const authToken = authHeader.substr(7);
@@ -27,7 +28,7 @@ const checkAndParseSession = async (authHeader) => {
 	} catch (error) {
 		const logger = getChildLogger('user-service');
 		logger.error(error.message, { error });
-		throw new Error(error.message);
+		throw new ServiceError.unauthorized(error.message);
 	}
 };
 
@@ -35,7 +36,7 @@ const checkRole = (role, roles) => {
 	const hasPermission = roles.includes(role);
 
 	if (!hasPermission) {
-		throw new Error('You are not allowed to view this part of the application');
+		throw new ServiceError.unauthorized('You are not allowed to view this part of the application');
 	}
 };
 
@@ -104,7 +105,7 @@ const getById = async (id) => {
   const user = await userRepository.findById(id);
 
   if (!user) {
-    throw new Error(`No user with id ${id} exists`, { id });
+    throw new ServiceError.notFound(`No user with id ${id} exists`, { id });
   }
 
   return user;
@@ -132,9 +133,6 @@ const getById = async (id) => {
  * @param {string} email - email of the user.
  * @param {string} user_name - Name of the user.
  *
- * @throws {ServiceError} One of:
- * - NOT_FOUND: No user with the given id could be found.
- * - VALIDATION_FAILED: A user with the same email exists.
  */
 const updateById = (id, { email,	user_name}) => {
   debugLog(`Updating user with id ${id}`, {id,	email,	user_name});
@@ -155,7 +153,7 @@ const deleteById = async (id) => {
   const deleted = await userRepository.deleteById(id);
 
   if (!deleted) {
-    throw new Error(`No user with id ${id} exists`, { id });
+    throw ServiceError.unauthorized(`No user with id ${id} exists`, { id });
   }
 };
 
@@ -179,14 +177,14 @@ const login = async (email, password) => {
 
 	if (!user) {
 		// DO NOT expose we don't know the user
-		throw new Error('The given email and password do not match');
+		throw ServiceError.notFound('The given email and password do not match');
 	}
 
 	const passwordValid = await verifyPassword(password, user.password);
 
 	if (!passwordValid) {
 		// DO NOT expose we know the user but an invalid password was given
-		throw new Error('The given email and password do not match');
+		throw new ServiceError.unauthorized('The given email and password do not match');
 	}
 
 	return await makeLoginData(user);

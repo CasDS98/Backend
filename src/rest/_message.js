@@ -78,10 +78,10 @@ getAllGroupMessages.validationScheme = {
 		prefix: '/messages',
 	});
 
-  router.get('/:groupId',requireAuthentication, validate(login.getAllGroupMessages), getAllGroupMessages);
-  router.post('/',requireAuthentication, validate(login.createMessage), createMessage);
-  router.put('/:id',requireAuthentication, validate(login.updateMessageById), updateMessageById);
-  router.delete('/:id',requireAuthentication, validate(login.deleteMessageById), deleteMessageById);
+  router.get('/:groupId',requireAuthentication, validate(getAllGroupMessages.validationScheme), getAllGroupMessages);
+  router.post('/',requireAuthentication, validate(createMessage.validationScheme), createMessage);
+  router.put('/:id',requireAuthentication, validate(updateMessageById.validationScheme), updateMessageById);
+  router.delete('/:id',requireAuthentication, validate(deleteMessageById.validationScheme), deleteMessageById);
 
   app
     .use(router.routes())
