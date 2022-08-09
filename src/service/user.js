@@ -112,21 +112,33 @@ const getById = async (id) => {
 
 
 /**
+ * Get the user by search value.
+ *
+ * @param {string} value - value to search by.
+ *
+ */
+ const getBySearch = async (value) => {
+  debugLog(`Fetching user with name or email like ${value}`);
+  const user = await userRepository.findBySearch(value);
+
+  return user;
+};
+
+/**
  * Update an existing user.
  *
  * @param {object} user - User to create.
  * @param {string} id - Id of the user to update.
  * @param {string} email - email of the user.
  * @param {string} user_name - Name of the user.
- * @param {string} password - password of the user.
  *
  * @throws {ServiceError} One of:
  * - NOT_FOUND: No user with the given id could be found.
  * - VALIDATION_FAILED: A user with the same email exists.
  */
-const updateById = (id, { email,	user_name,	password }) => {
-  debugLog(`Updating user with id ${id}`, {id,	email,	user_name,	password });
-  return userRepository.updateById(id, { email,	user_name,	password });
+const updateById = (id, { email,	user_name}) => {
+  debugLog(`Updating user with id ${id}`, {id,	email,	user_name});
+  return userRepository.updateById(id, { email,	user_name });
 };
 
 
@@ -190,4 +202,5 @@ module.exports = {
   login,
   checkAndParseSession,
   checkRole,
+	getBySearch
 };

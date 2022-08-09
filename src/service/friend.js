@@ -33,7 +33,8 @@ const debugLog = (message, meta = {}) => {
  */
  const create = async ({ user_a, user_b}) => {
 	debugLog('Creating new friends: ', { user_a, user_b});
-
+	console.log(user_a);
+	console.log(user_b);
 	return friendRepository.create({
 		user_a,
 		user_b,

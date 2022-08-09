@@ -85,7 +85,6 @@ const create = async ({
 const updateById = async (id, {
   email,
   user_name,
-  password,
 }) => {
   try {
     await getKnex()(tables.user)
@@ -93,7 +92,6 @@ const updateById = async (id, {
         id,
 				email,
 				user_name,
-				password,
       })
       .where('id', id);
     return await findById(id);
@@ -132,6 +130,13 @@ const findByEmail = (email) => {
 		.first();
 };
 
+const findBySearch = (value) => {
+	return getKnex()(tables.user).select("id","email","user_name","roles")
+    .limit(100)
+		.where('user_name', 'like' , `%${value}%`)
+    .orWhere('email', 'like' , `%${value}%`)
+};
+
 module.exports = {
   findAll,
   findCount,
@@ -139,5 +144,6 @@ module.exports = {
   create,
   updateById,
   deleteById,
-  findByEmail
+  findByEmail,
+  findBySearch
 };
