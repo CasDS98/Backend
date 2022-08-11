@@ -3,7 +3,6 @@ const config = require('config');
 const koaCors = require('@koa/cors');
 const bodyParser = require('koa-bodyparser');
 const emoji = require('node-emoji');
-const { serializeError } = import('serialize-error');
 
 const ServiceError = require('./core/serviceError');
 const { initializeLogger, getLogger } = require('./core/logging');
@@ -88,7 +87,7 @@ module.exports = async function createServer () {
     } catch (error) {
       const logger = getLogger();
       logger.error('Error occured while handling a request', {
-        error: serializeError(error),
+        error: error,
       });
 
       let statusCode = error.status || 500;
@@ -129,7 +128,7 @@ module.exports = async function createServer () {
 			methods: ["GET", "POST"]
 		}
 	});
-	server.listen("9000");
+	//server.listen("9000");
 
 
 	
@@ -160,8 +159,8 @@ module.exports = async function createServer () {
 
     start(){
       return new Promise((resolve) => {
-        const port = process.env.PORT || 9001;
-        app.listen(port);
+        const port = process.env.PORT || 9000;
+        server.listen(port);
         logger.info(`🚀 Server listening on http://localhost:${port}`);
         resolve();
       });

@@ -50,10 +50,10 @@ getAllMembers.validationScheme = {
 };
 
 const addMember = async (ctx) => {
-	await groupService.addMember(ctx.params.id,{
+	ctx.body = await groupService.addMember(ctx.params.id,{
 		...ctx.request.body,
 	});
-	ctx.status = 204;
+	ctx.status = 201;
 };
 
 addMember.validationScheme = {
@@ -61,7 +61,6 @@ addMember.validationScheme = {
     id: Joi.string().uuid(),
   },
   body: {
-    group_id: Joi.string().uuid(),
     user_id: Joi.string().uuid()
   },
 };

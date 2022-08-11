@@ -1,6 +1,7 @@
 const config = require('config');
 const argon2 = require('argon2');
 
+
 const ARGON_SALT_LENGHT = config.get('auth.argon.saltLenght');
 const ARGON_HASH_LENGHT = config.get('auth.argon.hashLenght');
 const ARGON_TIME_COST = config.get('auth.argon.timeCost');

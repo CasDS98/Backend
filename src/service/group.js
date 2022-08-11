@@ -71,7 +71,7 @@ const debugLog = (message, meta = {}) => {
 	const result = await groupRepository.findUserGroup(user_id,id);
 	if(result) throw ServiceError.forbidden(`User ${user_id} is already member of group ${id}`);
 	//add member
-	await groupRepository.addMember(id,user_id);
+	return await groupRepository.addMember(id,user_id);
 };
 
 

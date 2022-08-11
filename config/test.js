@@ -1,6 +1,6 @@
 module.exports = {
 	log: {
-		level: 'info',
+		level: 'silly',
 		disabled: false,
 	},
 
@@ -9,6 +9,14 @@ module.exports = {
 		maxAge: 3 * 60 * 60,
 	},
 
+	database: {
+		client: 'mysql2',
+		host: 'localhost',
+		port: 3306,
+		name: 'chatapp_test',
+		username: 'root',
+		password: process.env.DBPWD,
+	},
 	auth:{
 		argon : {
 			saltLenght: 16,
