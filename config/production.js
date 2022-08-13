@@ -13,7 +13,7 @@ module.exports = {
 		client: 'mysql2',
 		host: 'ID383529_chatapp.db.webhosting.be',
 		port: 3306,
-		name: '`ID383529_chatapp`',
+		name: 'ID383529_chatapp',
 		username: 'ID383529_chatapp',
 	},
 	auth:{
