@@ -159,12 +159,19 @@ module.exports = async function createServer () {
     socket.on('delete_user', (data) => {
       console.log(`USER IS DELETED`);
       io.emit('receive_delete_user', data);
-  })
+     })
 
-  socket.on('delete_group', (data) => {
+    socket.on('delete_group', (data) => {
     console.log(`GROUP IS DELETED`);
     socket.to(data.room).emit('receive_delete_group');
     })
+
+    socket.on('delete_message', (data) => {
+      console.log(`MESSAGE IS DELETED`);
+      console.log(data);
+      socket.to(data.room).emit('receive_delete_message', data.id);
+      })
+  
 
 			socket.on('disconnect', () => {
 				console.log('USER DISCONNECTED');
