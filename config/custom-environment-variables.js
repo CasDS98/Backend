@@ -7,6 +7,7 @@ module.exports = {
     password: 'DATABASE_PASSWORD',
     name: 'DATABASE_NAME',
   },
+  origin: 'SOCKET_ORIGIN',
 	auth: {
     jwt: {
       secret: 'JWT_SECRET',

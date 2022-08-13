@@ -124,7 +124,7 @@ module.exports = async function createServer () {
   const  server = require('http').createServer(app.callback())
 	const  io = socketIo(server, {
 		cors: {
-			origin: "http://localhost:3000",
+			origin: config.origin,
 			methods: ["GET", "POST"]
 		}
 	});
