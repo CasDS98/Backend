@@ -5,7 +5,7 @@ module.exports = {
 	},
 
 	cors: {
-		origins: ['http://localhost:3000'],
+		origins: ['https://hogent-web.github.io','https://hogent-web.github.io/frontendweb-karine-2122-CasDS98/','http://localhost:3000'],
 		maxAge: 3 * 60 * 60,
 	},
 

@@ -70,6 +70,7 @@ deleteUserById.validationScheme = {
 
 const login = async (ctx) => {
 	const { email, password } = ctx.request.body;
+  console.log("login")
 	const session = await userService.login(email, password);
 	ctx.body = session;
 };
