@@ -5,6 +5,30 @@ const { requireAuthentication, makeRequireRole } = require('../core/auth');
 const Role = require('../core/roles');
 const validate = require('./_validation');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Represents the users of the application
+ */
+
+
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *       summary: Get all users
+ *       description: Get all users
+ *       tags:
+ *       - Users
+ *      
+ *       responses:
+ *        200:
+ *         description: Array of users
+ *   
+ 
+ */
+
 const getAllUsers = async (ctx) => {
   const users = await userService.getAll(
     ctx.query.limit && Number(ctx.query.limit),
@@ -19,6 +43,28 @@ getAllUsers.validationScheme = {
   }).and('limit', 'offset'),
 };
 
+
+/**
+ * @swagger
+ * /api/users/:value:
+ *   get:
+ *       summary: Get all users with search 
+ *       description: Get all users that have a name or email like the search value
+ *       tags:
+ *       - Users
+ *       parameters:
+ *       - in: path
+ *         name: value
+ *         schema:
+ *          type: string
+ *          required: true
+ *          description: value used to search for users
+ *       responses:
+ *        200:
+ *         description: Array of users
+ *   
+ 
+ */
 const getUsersBySearch = async (ctx) => { 
   const users = await userService.getBySearch(ctx.params.value);
   ctx.body = users;
@@ -30,6 +76,27 @@ getUsersBySearch.validationScheme = {
   },
 };
 
+/**
+ * @swagger
+ * /api/users/:id:
+ *   get:
+ *       summary: Get user by id
+ *       description: Get a user by an id
+ *       tags:
+ *       - Users
+ *       parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *          type: uuid
+ *          required: true
+ *          description: The id of the user
+ *       responses:
+ *        200:
+ *         description: a user
+ *   
+ 
+ */
 const getUserById = async (ctx) => {
   const user = await userService.getById(ctx.params.id);
   ctx.body = user;
@@ -57,6 +124,28 @@ updateUserById.validationScheme = {
   },
 };
 
+/**
+ * @swagger
+ * /api/users/:id:
+ *   delete:
+ *       summary: delete user
+ *       description: delete a user by it's id
+ *       tags:
+ *       - Users
+ *       parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *          type: uuid
+ *          required: true
+ *          description: ID of the user 
+ * 
+ *       responses:
+ *        204:
+ *         description: The user was succesfully deleted
+ *   
+ y
+ */
 const deleteUserById = async (ctx) => {
   await userService.deleteById(ctx.params.id);
   ctx.status = 204;
@@ -68,6 +157,35 @@ deleteUserById.validationScheme = {
   },
 };
 
+/**
+ * @swagger
+ * /api/users/register:
+ *   post:
+ *       summary: Register a user
+ *       description: Creation of a new user
+ *       tags:
+ *       - Users
+ * 
+ *       requestBodies:
+ *        description: The user info
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                user_name:
+ *                  type: string
+ *                paswword:
+ *                  type: string
+ *                email:
+ *                  type: string
+ *       responses:
+ *        200:
+ *         description: The session
+ *   
+ 
+ */
 const login = async (ctx) => {
 	const { email, password } = ctx.request.body;
   console.log("login")
@@ -83,6 +201,33 @@ login.validationScheme = {
 };
 
 
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *       summary: log in
+ *       description: log in as a user
+ *       tags:
+ *       - Users
+ * 
+ *       requestBodies:
+ *        description: The email and password
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                user_name:
+ *                  type: string
+ *                paswword:
+ *                  type: string
+ *       responses:
+ *        200:
+ *         description: The session
+ *   
+ 
+ */
 const register = async (ctx) => {
 	const session = await userService.register(ctx.request.body);
 	ctx.body = session;
